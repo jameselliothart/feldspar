@@ -1,25 +1,31 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿using System;
+using MarketDataService.Providers;
+using StackExchange.Redis;
 
-// Add services to the container.
+var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION") ??
+    throw new ArgumentNullException("REDIS_CONNECTION", "Please provide define environment variable for REDIS_CONNECTION");
+var alphaVantageBaseUri = Environment.GetEnvironmentVariable("ALPHAVANTAGE_BASE") ??
+    throw new ArgumentNullException("ALPHAVANTAGE_BASE", "Please provide define environment variable for ALPHAVANTAGE_BASE");
+var alphaVantageApiKey = Environment.GetEnvironmentVariable("ALPHAVANTAGE_API_KEY") ??
+    throw new ArgumentNullException("ALPHAVANTAGE_API_KEY", "Please provide define environment variable for ALPHAVANTAGE_API_KEY");
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var redis = ConnectionMultiplexer.Connect(redisConnectionString);
+var sub = redis.GetSubscriber();
 
-var app = builder.Build();
+var alphaVantage = new AlphaVantage(alphaVantageBaseUri, alphaVantageApiKey);
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+sub.Subscribe("MarketData.Request", async (ch, msg) => {
+    Console.WriteLine($"Received request for [{msg.ToString()}]");
+    var request = msg.ToString().Split('|');
+    var (commodity, interval) = (request[0], request[1]);
+    var data = await alphaVantage.GetCommodityData(commodity, interval);
+    sub.Publish("MarketData.Provider", data);
+});
+sub.Subscribe("MarketData.Provider", (ch, msg) => {
+    Console.WriteLine("Received market data:");
+    System.Console.WriteLine(msg.ToString());
+});
 
-app.UseHttpsRedirection();
+sub.Publish("MarketData.Request", "WHEAT|MONTHLY");
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+Console.ReadKey();

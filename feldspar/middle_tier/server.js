@@ -4,7 +4,7 @@ const socketIo = require("socket.io");
 const index = require("./routes/index");
 const redis = require("redis");
 
-const PORT = process.env.MT_PORT || 4001;
+const PORT = process.env.MT_PORT || 80;
 
 const app = express();
 app.use(index);

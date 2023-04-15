@@ -1,17 +1,14 @@
-﻿using MarketDataService.Providers;
+﻿using MarketDataService.Config;
+using MarketDataService.Providers;
 using StackExchange.Redis;
 // TODO: docker compose env vars
-var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION") ??
-    throw new ArgumentNullException("REDIS_CONNECTION", "Please provide define environment variable for REDIS_CONNECTION");
-var alphaVantageBaseUri = Environment.GetEnvironmentVariable("ALPHAVANTAGE_BASE_URI") ??
-    throw new ArgumentNullException("ALPHAVANTAGE_BASE_URI", "Please provide define environment variable for ALPHAVANTAGE_BASE_URI");
-var alphaVantageApiKey = Environment.GetEnvironmentVariable("ALPHAVANTAGE_API_KEY") ??
-    throw new ArgumentNullException("ALPHAVANTAGE_API_KEY", "Please provide define environment variable for ALPHAVANTAGE_API_KEY");
 
-var redis = ConnectionMultiplexer.Connect(redisConnectionString);
+var config = Configuration.FromEnvironmentVariables();
+
+var redis = ConnectionMultiplexer.Connect(config.RedisConnectionString);
 var sub = redis.GetSubscriber();
 
-var alphaVantage = new AlphaVantage(alphaVantageBaseUri, alphaVantageApiKey);
+var alphaVantage = new AlphaVantage(config.AlphaVantageBaseUri, config.AlphaVantageApiKey);
 
 sub.Subscribe("MarketData.Query", async (ch, msg) => {
     Console.WriteLine($"Received request for [{msg.ToString()}]");

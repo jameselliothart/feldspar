@@ -12,8 +12,8 @@ services:
       context: .
       dockerfile: feldspar/MarketDataService/Dockerfile
     environment:
-      - REDIS_CONNECTION=redis
-      - ALPHAVANTAGE_BASE_URI
-      - ALPHAVANTAGE_API_KEY
+      - FELDSPAR_REDIS_CONNECTION=redis
+      - FELDSPAR_ALPHAVANTAGE_API_KEY
+      - FELDSPAR_ALPHAVANTAGE_BASE_URI
     depends_on:
       - redis

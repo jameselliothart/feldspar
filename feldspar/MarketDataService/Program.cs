@@ -1,7 +1,6 @@
 ﻿using MarketDataService.Config;
 using MarketDataService.Providers;
 using StackExchange.Redis;
-// TODO: docker compose env vars
 
 var config = Configuration.FromEnvironmentVariables();
 

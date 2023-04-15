@@ -15,3 +15,7 @@
   - receive subscriptions from node for which to poll
 - python financial modeling
   - exposed via protocol buffer
+
+## Notes
+
+docker run -it -d -p 6379:6379 redis

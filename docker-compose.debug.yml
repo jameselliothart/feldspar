@@ -9,3 +9,14 @@ services:
       dockerfile: feldspar/MarketDataService/Dockerfile
     volumes:
       - ~/.vsdbg:/remote_debugger:rw
+  middletier:
+    image: middletier
+    build:
+      context: feldspar/middle_tier
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: development
+    ports:
+      - 80:80
+      - 9229:9229
+    command: ["node", "--inspect=0.0.0.0:9229", "index.js"]

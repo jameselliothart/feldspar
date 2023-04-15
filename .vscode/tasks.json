@@ -92,6 +92,19 @@
             "netCore": {
                 "appProject": "${workspaceFolder}/feldspar/MarketDataService/MarketDataService.csproj"
             }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build",
+            "platform": "node",
+            "dockerBuild": {
+                "dockerfile": "${workspaceFolder}/feldspar/middle_tier/Dockerfile",
+                "context": "${workspaceFolder}/feldspar/middle_tier",
+                "pull": true
+            },
+            "node": {
+                "package": "${workspaceFolder}/feldspar/middle_tier/package.json"
+            }
         }
     ]
 }

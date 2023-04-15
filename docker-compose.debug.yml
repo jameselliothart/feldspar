@@ -1,0 +1,11 @@
+
+version: '3.4'
+
+services:
+  marketdataservice:
+    image: marketdataservice
+    build:
+      context: .
+      dockerfile: feldspar/MarketDataService/Dockerfile
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw

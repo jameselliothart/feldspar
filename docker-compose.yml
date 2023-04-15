@@ -1,0 +1,17 @@
+
+version: '3.4'
+
+services:
+  marketdataservice:
+    image: marketdataservice
+    build:
+      context: .
+      dockerfile: feldspar/MarketDataService/Dockerfile
+    environment:
+      - REDIS_CONNECTION=redis
+      - ALPHAVANTAGE_BASE_URI
+      - ALPHAVANTAGE_API_KEY
+  redis:
+    image: redis
+    restart: always
+    command: redis-server

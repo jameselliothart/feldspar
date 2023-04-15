@@ -1,11 +1,10 @@
-﻿using System;
-using MarketDataService.Providers;
+﻿using MarketDataService.Providers;
 using StackExchange.Redis;
-
+// TODO: docker compose env vars
 var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION") ??
     throw new ArgumentNullException("REDIS_CONNECTION", "Please provide define environment variable for REDIS_CONNECTION");
-var alphaVantageBaseUri = Environment.GetEnvironmentVariable("ALPHAVANTAGE_BASE") ??
-    throw new ArgumentNullException("ALPHAVANTAGE_BASE", "Please provide define environment variable for ALPHAVANTAGE_BASE");
+var alphaVantageBaseUri = Environment.GetEnvironmentVariable("ALPHAVANTAGE_BASE_URI") ??
+    throw new ArgumentNullException("ALPHAVANTAGE_BASE_URI", "Please provide define environment variable for ALPHAVANTAGE_BASE_URI");
 var alphaVantageApiKey = Environment.GetEnvironmentVariable("ALPHAVANTAGE_API_KEY") ??
     throw new ArgumentNullException("ALPHAVANTAGE_API_KEY", "Please provide define environment variable for ALPHAVANTAGE_API_KEY");
 
@@ -14,18 +13,13 @@ var sub = redis.GetSubscriber();
 
 var alphaVantage = new AlphaVantage(alphaVantageBaseUri, alphaVantageApiKey);
 
-sub.Subscribe("MarketData.Request", async (ch, msg) => {
+sub.Subscribe("MarketData.Query", async (ch, msg) => {
     Console.WriteLine($"Received request for [{msg.ToString()}]");
     var request = msg.ToString().Split('|');
     var (commodity, interval) = (request[0], request[1]);
     var data = await alphaVantage.GetCommodityData(commodity, interval);
-    sub.Publish("MarketData.Provider", data);
-});
-sub.Subscribe("MarketData.Provider", (ch, msg) => {
-    Console.WriteLine("Received market data:");
-    System.Console.WriteLine(msg.ToString());
+    sub.Publish("MarketData.Publish", data);
 });
 
-sub.Publish("MarketData.Request", "WHEAT|MONTHLY");
-
+System.Console.WriteLine("Listening... Press any key to exit.");
 Console.ReadKey();

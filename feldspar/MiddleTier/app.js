@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const index = require("./routes/index");
+const redis = require("redis");
 
 const PORT = process.env.MT_PORT || 4001;
 
@@ -17,25 +18,35 @@ const io = socketIo(server, {
     }
 });
 
-let interval;
+let redisSub;
+let redisPub;
+
+(async () => {
+    redisSub = redis.createClient();
+    redisSub.on('error', err => console.log('Redis subscriber error', err));
+    redisPub = redisSub.duplicate();
+    redisPub.on('error', err => console.log('Redis publisher error', err));
+    await redisSub.connect();
+    await redisPub.connect();
+})();
+
 
 io.on("connection", (socket) => {
     console.log("New client connected: ", socket.id);
-    if (interval) {
-        clearInterval(interval);
-    }
-    interval = setInterval(() => getApiAndEmit(socket), 1000);
+
     socket.on("disconnect", () => {
         console.log("Client disconnected");
-        clearInterval(interval);
+    });
+
+    socket.on('FromClient.Query', async (msg) => {
+        console.log('FromClient.Query:', msg);
+        await redisSub.subscribe('MarketData.Publish', (data, ch) => {
+            console.log(data)
+            socket.emit('FromServer.Command', data)
+        });
+        await redisPub.publish('MarketData.Query', msg)
     });
 });
-
-const getApiAndEmit = socket => {
-    const response = new Date();
-    // Emitting a new message. Will be consumed by the client
-    socket.emit("FromAPI", response);
-};
 
 server.listen(PORT, err => {
     if(err) console.log(err);

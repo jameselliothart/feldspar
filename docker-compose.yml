@@ -24,7 +24,6 @@ services:
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
-    ports:
-      - 80:80
+      FELDSPAR_REDIS_CONNECTION: redis
     depends_on:
       - redis

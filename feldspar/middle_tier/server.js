@@ -5,7 +5,7 @@ const index = require("./routes/index");
 const redis = require("redis");
 
 const PORT = process.env.FELDSPAR_MT_PORT || 4001;
-const REDIS_HOST = process.env.FELDSPAR_REDIS_HOST || 'localhost'
+const REDIS_CONN = process.env.FELDSPAR_REDIS_CONNECTION || 'localhost'
 
 const app = express();
 app.use(index);
@@ -23,7 +23,7 @@ let redisSub;
 let redisPub;
 
 (async () => {
-    const url = `redis://${REDIS_HOST}`;
+    const url = `redis://${REDIS_CONN}`;
     console.log('Connecting to redis host', url)
     redisSub = redis.createClient({ url });
     redisSub.on('error', err => console.log('Redis subscriber error', err));

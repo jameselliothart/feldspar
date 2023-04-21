@@ -27,3 +27,17 @@ services:
       FELDSPAR_REDIS_CONNECTION: redis
     depends_on:
       - redis
+
+  web:
+    image: web
+    build:
+      context: feldspar/web
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+      WDS_SOCKET_PORT: '0'
+    depends_on:
+      - middletier
+    ports:
+      - "80:80"
+    command: ["nginx", "-g", "daemon off;"]

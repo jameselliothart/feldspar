@@ -44,7 +44,6 @@ io.on("connection", (socket) => {
     socket.on('FromClient.Query', async (msg) => {
         console.log('FromClient.Query:', msg);
         await redisSub.subscribe('MarketData.Publish', (data, ch) => {
-            console.log(data)
             socket.emit('FromServer.Command', data)
         });
         await redisPub.publish('MarketData.Query', msg)

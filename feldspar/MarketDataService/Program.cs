@@ -17,5 +17,9 @@ sub.Subscribe("MarketData.Query", async (ch, msg) => {
     sub.Publish("MarketData.Publish", data);
 });
 
-System.Console.WriteLine("Listening... Press any key to exit.");
-Console.ReadKey();
+System.Console.WriteLine("MarketDataService has started.");
+
+while (true)
+{
+    continue;
+}

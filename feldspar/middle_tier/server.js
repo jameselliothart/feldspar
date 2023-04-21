@@ -4,7 +4,7 @@ const socketIo = require("socket.io");
 const index = require("./routes/index");
 const redis = require("redis");
 
-const PORT = process.env.MT_PORT || 80;
+const REDIS_HOST = process.env.FELDSPAR_REDIS_HOST || 'localhost'
 
 const app = express();
 app.use(index);
@@ -22,7 +22,9 @@ let redisSub;
 let redisPub;
 
 (async () => {
-    redisSub = redis.createClient();
+    const url = `redis://${REDIS_HOST}`;
+    console.log('Connecting to redis host', url)
+    redisSub = redis.createClient({ url });
     redisSub.on('error', err => console.log('Redis subscriber error', err));
     redisPub = redisSub.duplicate();
     redisPub.on('error', err => console.log('Redis publisher error', err));

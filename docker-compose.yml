@@ -1,4 +1,3 @@
-
 version: '3.4'
 
 services:
@@ -6,6 +5,7 @@ services:
     image: redis
     restart: always
     command: redis-server
+
   marketdataservice:
     image: marketdataservice
     build:
@@ -17,6 +17,7 @@ services:
       - FELDSPAR_ALPHAVANTAGE_API_KEY
     depends_on:
       - redis
+
   middletier:
     image: middletier
     build:

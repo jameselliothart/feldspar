@@ -4,6 +4,7 @@ const socketIo = require("socket.io");
 const index = require("./routes/index");
 const redis = require("redis");
 
+const PORT = process.env.FELDSPAR_MT_PORT || 4001;
 const REDIS_HOST = process.env.FELDSPAR_REDIS_HOST || 'localhost'
 
 const app = express();

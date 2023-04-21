@@ -7,6 +7,7 @@ const ENDPOINT = `${BASE_URI}:4001`;
 function App() {
   const [socket, setSocket] = useState(null);
   const [response, setResponse] = useState("");
+  const [health, setHealth] = useState("");
 
   useEffect(() => {
     const newSocket = io(ENDPOINT);
@@ -27,6 +28,14 @@ function App() {
 
   }, [setSocket]);
 
+  const checkHealth = async () => {
+    const res = await fetch('/json/health');
+    if (res.ok) {
+      const data = await res.json();
+      setHealth(JSON.stringify(data));
+    } else {console.log('fetch error', res)}
+  }
+
   const query = socket => {
     console.log('FromClient.Query')
     socket.emit('FromClient.Query', 'WHEAT|MONTHLY')
@@ -34,8 +43,11 @@ function App() {
 
   return (
     <div>
+      <button onClick={() => checkHealth(socket)}>Check Health</button>
       <button onClick={() => query(socket)}>query</button>
       <p>
+        {health}
+        <br/>
         hi {response}
       </p>
     </div>

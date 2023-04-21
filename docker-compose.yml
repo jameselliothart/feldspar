@@ -13,8 +13,8 @@ services:
       dockerfile: feldspar/MarketDataService/Dockerfile
     environment:
       - FELDSPAR_REDIS_CONNECTION=redis
+      - FELDSPAR_ALPHAVANTAGE_BASE_URI=https://www.alphavantage.co
       - FELDSPAR_ALPHAVANTAGE_API_KEY
-      - FELDSPAR_ALPHAVANTAGE_BASE_URI
     depends_on:
       - redis
   middletier:

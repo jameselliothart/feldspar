@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
+import PermanentDrawerLeft from "./navigation/PermanentDrawerLeft";
 
 const ENDPOINT = 'http://localhost';
 
@@ -43,13 +44,7 @@ function App() {
 
   return (
     <div>
-      <button onClick={() => checkHealth(socket)}>Check Health</button>
-      <button onClick={() => query(socket)}>query</button>
-      <p>
-        {health}
-        <br/>
-        hi {response}
-      </p>
+      <PermanentDrawerLeft></PermanentDrawerLeft>
     </div>
   );
 }

@@ -41,7 +41,7 @@ export default function PermanentDrawerLeft() {
             >
                 <Toolbar>
                     <Typography variant="h6" noWrap component="div">
-                        Feldspar
+                        Feldspar - {process.env.NODE_ENV}
                     </Typography>
                 </Toolbar>
             </AppBar>

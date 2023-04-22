@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,16 +12,18 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import About from '../screens/About';
 import AssetVisualizer from '../screens/AssetVisualizer';
+import WTIData from '../.mockdata/WTI-Monthly.json'
 
 const drawerWidth = 240;
 
 export default function PermanentDrawerLeft() {
-    const [content, setContent] = useState(About());
-    const [selected, setSelected] = useState('About');
+    const [content, setContent] = React.useState(About());
+    const [selected, setSelected] = React.useState('About');
 
     const handleAssetVisualizerClick = () => {
+        const newContent = <AssetVisualizer data={WTIData}></AssetVisualizer>;
+        setContent(newContent);
         setSelected('Asset Visualizer');
-        setContent(AssetVisualizer);
     }
 
     const handleAboutClick = () => {

@@ -34,7 +34,7 @@ const options = {
     },
 };
 
-export default function AssetVisualizer({data}) {
+export default function PriceChart({ data }) {
     const labels = data.data.map(x => x.date);
     const values = data.data.map(x => x.value);
     const chartData = {

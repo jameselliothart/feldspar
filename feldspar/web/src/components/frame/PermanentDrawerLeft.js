@@ -10,9 +10,9 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import About from '../screens/About';
-import AssetVisualizer from '../screens/AssetVisualizer';
-import WTIData from '../.mockdata/WTI-Monthly.json'
+import About from '../About';
+import PriceChart from '../PriceChart';
+import WTIData from '../../.mockdata/WTI-Monthly.json'
 
 const drawerWidth = 240;
 
@@ -22,7 +22,7 @@ export default function PermanentDrawerLeft() {
     WTIData.data.sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
 
     const handleAssetVisualizerClick = () => {
-        const newContent = <AssetVisualizer data={WTIData}></AssetVisualizer>;
+        const newContent = <PriceChart data={WTIData}></PriceChart>;
         setContent(newContent);
         setSelected('Asset Visualizer');
     }

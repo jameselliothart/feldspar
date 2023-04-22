@@ -19,6 +19,7 @@ const drawerWidth = 240;
 export default function PermanentDrawerLeft() {
     const [content, setContent] = React.useState(About());
     const [selected, setSelected] = React.useState('About');
+    WTIData.data.sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
 
     const handleAssetVisualizerClick = () => {
         const newContent = <AssetVisualizer data={WTIData}></AssetVisualizer>;

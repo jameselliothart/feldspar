@@ -12,24 +12,21 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import About from '../About';
 import AssetVisualizer from '../AssetVisualizer';
-import WTIData from '../../.mockdata/WTI-Monthly.json'
 
 const drawerWidth = 240;
 
 export default function PermanentDrawerLeft() {
-    const [content, setContent] = React.useState(About());
+    const [content, setContent] = React.useState(<About/>);
     const [selected, setSelected] = React.useState('About');
-    WTIData.data.sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
 
     const handleAssetVisualizerClick = () => {
-        const newContent = <AssetVisualizer data={WTIData}></AssetVisualizer>;
-        setContent(newContent);
+        setContent(<AssetVisualizer></AssetVisualizer>);
         setSelected('Asset Visualizer');
     }
 
     const handleAboutClick = () => {
         setSelected('About');
-        setContent(About());
+        setContent(<About/>);
     }
 
     return (

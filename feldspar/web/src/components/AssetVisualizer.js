@@ -1,14 +1,11 @@
 import React from 'react';
 import PriceChart from './PriceChart';
 import AssetSelector from './AssetSelector';
+import Commodities from '.././curve_config/commodities.json';
+import WTIData from '../.mockdata/WTI-Monthly.json'
 
-const STARTING_ASSETS = [
-    { key: 'WTI', name: 'WTI' },
-    { key: 'BRENT', name: 'Brent' },
-    { key: 'NATURAL_GAS', name: 'Natural Gas' },
-]
-
-export default function AssetVisualizer({ data, startingAssets = STARTING_ASSETS }) {
+export default function AssetVisualizer({ data = WTIData, startingAssets = Commodities.functions }) {
+    data.data.sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
 
     const [assets, setAssets] = React.useState([]);
 

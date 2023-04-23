@@ -1,0 +1,20 @@
+{
+    "functions": [
+        { "key": "WTI", "name": "WTI" },
+        { "key": "BRENT", "name": "Brent" },
+        { "key": "NATURAL_GAS", "name": "Natural Gas" },
+        { "key": "COPPER", "name": "Copper" },
+        { "key": "ALUMINUM", "name": "Aluminum" },
+        { "key": "WHEAT", "name": "Wheat" },
+        { "key": "CORN", "name": "Corn" },
+        { "key": "COTTON", "name": "Cotton" },
+        { "key": "SUGAR", "name": "Sugar" },
+        { "key": "COFFEE", "name": "Coffee" },
+        { "key": "ALL_COMMODITIES", "name": "Global Commodities Index" }
+    ],
+    "intervals": [
+        "daily",
+        "weekly",
+        "monthly"
+    ]
+}

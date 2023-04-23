@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
-import PermanentDrawerLeft from "./navigation/PermanentDrawerLeft";
+import PermanentDrawerLeft from "./components/frame/PermanentDrawerLeft";
 
 const ENDPOINT = 'http://localhost';
 

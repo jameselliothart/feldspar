@@ -4,19 +4,17 @@ import AssetSelector from './AssetSelector';
 import Commodities from '.././curve_config/commodities.json';
 import WTIData from '../.mockdata/WTI-Monthly.json'
 
-export default function AssetVisualizer({ data = WTIData, startingAssets = Commodities.functions }) {
+export default function AssetVisualizer({ availableAssets = Commodities.functions }) {
+    const data = WTIData;
     data.data.sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
 
-    const [assets, setAssets] = React.useState([]);
-
     const updateAssetSelection = (selectedAssets) => {
-        setAssets(selectedAssets);
+        console.log('FromClient.Query', selectedAssets.map(a => `${a}|MONTHLY`));
     };
 
     return (
         <div>
-            <AssetSelector assets={startingAssets} handleSelect={updateAssetSelection}></AssetSelector>
-            {assets}
+            <AssetSelector assets={availableAssets} handleSelect={updateAssetSelection}></AssetSelector>
             <PriceChart data={data}></PriceChart>
         </div>
     )

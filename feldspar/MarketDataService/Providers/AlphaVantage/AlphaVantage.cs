@@ -1,4 +1,6 @@
-namespace MarketDataService.Providers;
+using MarketDataService.Providers.AlphaVantage.Queries;
+
+namespace MarketDataService.Providers.AlphaVantage;
 
 public class AlphaVantage
 {
@@ -15,15 +17,21 @@ public class AlphaVantage
         _baseUri = new Uri($"{baseUri}/query?apikey={apiKey}");
     }
 
+    public async Task<string> Query(IAssetQuery assetQuery) => assetQuery switch
+    {
+        CommodityQuery(var name, var interval) => await GetCommodityData(name, interval),
+        _ => throw new ArgumentOutOfRangeException(nameof(assetQuery), $"Unrecognized asset query {assetQuery}!"),
+    };
+
     private Uri CommodityQuery(string commodity, string interval)
     {
         var uriString = $"{_baseUri}&function={commodity}&interval={interval}";
         return new Uri(uriString);
     }
 
-    public async Task<string> GetCommodityData(string commodity, string interval)
+    public async Task<string> GetCommodityData(string name, string interval)
     {
-        var queryUri = CommodityQuery(commodity, interval);
+        var queryUri = CommodityQuery(name, interval);
         using var client = new HttpClient();
         var response = await client.GetAsync(queryUri);
         response.EnsureSuccessStatusCode();

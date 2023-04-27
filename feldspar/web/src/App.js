@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import PermanentDrawerLeft from "./components/frame/PermanentDrawerLeft";
 
-const ENDPOINT = 'http://localhost';
+const ENDPOINT = process.env.REACT_APP_SOCKET_ENDPOINT;
 
 function App() {
   const [socket, setSocket] = useState(null);

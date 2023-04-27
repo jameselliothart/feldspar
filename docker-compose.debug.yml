@@ -2,21 +2,37 @@
 version: '3.4'
 
 services:
+  redis:
+    image: redis
+    restart: always
+    command: redis-server
+
   marketdataservice:
     image: marketdataservice
     build:
       context: .
       dockerfile: feldspar/MarketDataService/Dockerfile
+    environment:
+      - FELDSPAR_REDIS_CONNECTION=redis
+      - FELDSPAR_ALPHAVANTAGE_BASE_URI=https://www.alphavantage.co
+      - FELDSPAR_ALPHAVANTAGE_API_KEY
     volumes:
       - ~/.vsdbg:/remote_debugger:rw
+    depends_on:
+      - redis
+
   middletier:
     image: middletier
     build:
       context: feldspar/middle_tier
       dockerfile: ./Dockerfile
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
+      FELDSPAR_REDIS_CONNECTION: redis
+    depends_on:
+      - redis
     ports:
       - 80:80
+      - 4001:4001
       - 9229:9229
-    command: ["node", "--inspect=0.0.0.0:9229", "index.js"]
+    command: ["node", "--inspect=0.0.0.0:9229", "server.js"]

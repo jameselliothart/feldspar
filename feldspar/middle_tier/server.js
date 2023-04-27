@@ -46,6 +46,7 @@ io.on("connection", (socket) => {
         await redisSub.subscribe(`MarketData.Publish.${requestKey}`, (rawData, ch) => {
             console.log('Received response from', ch);
             const assetData = JSON.parse(rawData);
+            assetData.data = assetData.data.filter(dataPoint => !Number.isNaN(parseFloat(dataPoint.value)));
             assetData.data.sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
             console.log('Emitting data to', `FromServer.Command.${requestKey}`);
             socket.emit(`FromServer.Command.${requestKey}`, assetData)

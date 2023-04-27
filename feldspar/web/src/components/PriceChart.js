@@ -10,6 +10,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import AvailableColors from '../curve_config/colors.json';
 
 ChartJS.register(
     CategoryScale,
@@ -34,19 +35,21 @@ const options = {
     },
 };
 
-export default function PriceChart({ data }) {
-    const labels = data.data.map(x => x.date);
-    const values = data.data.map(x => x.value);
+export default function PriceChart({ assetDataSets }) {
+    const chartDataSets = assetDataSets.map((assetData, idx) => {
+        const values = assetData.data.map(dataPoint => dataPoint.value);
+        return {
+            label: `${assetData.name} ${assetData.unit}`,
+            data: values,
+            borderColor: AvailableColors[idx] ?? 'black',
+            backgroundColor: AvailableColors[idx] ?? 'black',
+        }
+    });
+    const uniqueTimes = new Set(...assetDataSets.map(d => d.data.map(x => x.date)));
+    const labels = Array.from(uniqueTimes);
     const chartData = {
         labels,
-        datasets: [
-            {
-                label: `${data.name} ${data.unit}`,
-                data: values,
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-        ],
+        datasets: chartDataSets,
     }
     return <Line options={options} data={chartData} />;
 }

@@ -41,12 +41,12 @@ io.on("connection", (socket) => {
         console.log("Client disconnected");
     });
 
-    socket.on('FromClient.Query', async (msg) => {
-        console.log('FromClient.Query:', msg);
-        await redisSub.subscribe('MarketData.Publish', (data, ch) => {
-            socket.emit('FromServer.Command', data)
+    socket.on('FromClient.Query', async (requestKey) => {
+        console.log('FromClient.Query:', requestKey, 'received');
+        await redisSub.subscribe(`MarketData.Publish.${requestKey}`, (data, ch) => {
+            socket.emit(`FromServer.Command.${requestKey}`, data)
         });
-        await redisPub.publish('MarketData.Query', msg)
+        await redisPub.publish(`MarketData.Query.${requestKey}`, requestKey)
     });
 });
 

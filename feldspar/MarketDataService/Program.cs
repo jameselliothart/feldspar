@@ -29,12 +29,16 @@ pubsub.Subscribe("MarketData.Query.*", async (ch, msg) => {
     {
         System.Console.WriteLine($"Cache miss for [{requestKey}]. Querying API.");
         result = await alphaVantage.Query(assetQuery);
-        System.Console.WriteLine($"Received result of length {result.Length}");
         await db.StringSetAsync(requestKey, result, new TimeSpan(hours: 0, minutes: 5, seconds: 0), When.NotExists);
     }
-    else {System.Console.WriteLine($"Cache hit for [{requestKey}].");}
-    System.Console.WriteLine("Publishing result");
-    pubsub.Publish($"MarketData.Publish.${requestKey}", result);
+    else
+    {
+        System.Console.WriteLine($"Cache hit for [{requestKey}].");
+    }
+    System.Console.WriteLine($"Received result of length {result.Length}");
+    var publishChannel = $"MarketData.Publish.{requestKey}";
+    System.Console.WriteLine($"Publishing result to {publishChannel}");
+    pubsub.Publish(publishChannel, result);
 });
 
 System.Console.WriteLine("MarketDataService has started.");

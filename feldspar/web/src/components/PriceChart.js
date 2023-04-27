@@ -37,7 +37,7 @@ const options = {
 
 export default function PriceChart({ assetDataSets }) {
     const chartDataSets = assetDataSets.map((assetData, idx) => {
-        const values = assetData.data.map(dataPoint => dataPoint.value);
+        const values = assetData.data.map(dataPoint => {return {x: dataPoint.date, y: dataPoint.value}});
         return {
             label: `${assetData.name} ${assetData.unit}`,
             data: values,
@@ -45,11 +45,8 @@ export default function PriceChart({ assetDataSets }) {
             backgroundColor: AvailableColors[idx] ?? 'black',
         }
     });
-    const uniqueTimes = new Set(...assetDataSets.map(d => d.data.map(x => x.date)));
-    const labels = Array.from(uniqueTimes);
     const chartData = {
-        labels,
         datasets: chartDataSets,
     }
-    return <Line options={options} data={chartData} />;
+    return <Line options={options} data={chartData} />
 }

@@ -6,7 +6,6 @@ const ENDPOINT = process.env.REACT_APP_SOCKET_ENDPOINT;
 
 function App() {
   const [socket, setSocket] = useState(null);
-  const [response, setResponse] = useState("");
   const [health, setHealth] = useState("");
 
   useEffect(() => {
@@ -20,21 +19,19 @@ function App() {
       setTimeout(() => newSocket.connect(), 5000);
     });
     newSocket.on('disconnect', () => console.log('client disconnected ', newSocket.id));
-    newSocket.on("FromServer.Command", data => {
-      setResponse(data);
-    });
 
     // CLEAN UP THE EFFECT
     return () => newSocket.disconnect();
 
   }, [setSocket]);
 
+  // TODO move this to about page
   const checkHealth = async () => {
     const res = await fetch('/json/health');
     if (res.ok) {
       const data = await res.json();
       setHealth(JSON.stringify(data));
-    } else {console.log('fetch error', res)}
+    } else { console.log('fetch error', res) }
   }
 
   const query = socket => {

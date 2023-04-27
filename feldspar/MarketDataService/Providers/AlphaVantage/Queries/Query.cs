@@ -13,18 +13,18 @@ public interface IAsset
 public record Commodity(string Name) : IAsset
 {
     public readonly ImmutableList<string> ValidIntervals =
-        ImmutableList<string>.Empty.AddRange(new List<string> { "daily", "weekly", "monthly" });
+        ImmutableList<string>.Empty.AddRange(new List<string> { "DAILY", "WEEKLY", "MONTHLY" });
 
     public IAssetQuery ToQuery(IEnumerable<string> args)
     {
-        var interval = args.Skip(1).Take(1).Single();
+        var interval = args.Skip(1).Take(1).Single().ToUpper();
         if (ValidIntervals.Contains(interval))
         {
             return new CommodityQuery(Name, interval);
         }
         else
         {
-            var msg = $"Provided interval '{interval}' is not one of the accepted: {ValidIntervals}";
+            var msg = $"Provided interval '{interval}' is not one of the accepted: {string.Join(',', ValidIntervals)}";
             throw new ArgumentOutOfRangeException(nameof(interval), msg);
         }
     }

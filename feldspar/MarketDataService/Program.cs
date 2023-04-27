@@ -6,12 +6,13 @@ using StackExchange.Redis;
 var config = Configuration.FromEnvironmentVariables();
 
 var redis = ConnectionMultiplexer.Connect(config.RedisConnectionString);
-var sub = redis.GetSubscriber();
+var pubsub = redis.GetSubscriber();
 var db = redis.GetDatabase();
 
 var alphaVantage = new AlphaVantage(config.AlphaVantageBaseUri, config.AlphaVantageApiKey);
 
-sub.Subscribe("MarketData.Query", async (ch, msg) => {
+// surprisingly hard to find documentation on * for wildcard
+pubsub.Subscribe("MarketData.Query.*", async (ch, msg) => {
     var requestKey = msg.ToString();
     Console.WriteLine($"Received request for [{requestKey}] on channel [{ch.ToString()}]");
     var assetQuery = Parser.GetAssetQuery(requestKey);
@@ -33,7 +34,7 @@ sub.Subscribe("MarketData.Query", async (ch, msg) => {
     }
     else {System.Console.WriteLine($"Cache hit for [{requestKey}].");}
     System.Console.WriteLine("Publishing result");
-    sub.Publish("MarketData.Publish", result);
+    pubsub.Publish($"MarketData.Publish.${requestKey}", result);
 });
 
 System.Console.WriteLine("MarketDataService has started.");

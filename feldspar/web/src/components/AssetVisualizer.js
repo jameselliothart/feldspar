@@ -27,7 +27,7 @@ export default function AssetVisualizer({ availableAssets = Commodities.function
     return (
         <div>
             <AssetSelector assets={availableAssets} handleSelect={updateAssetSelection}></AssetSelector>
-            <PriceChart assetDataSets={assetData}></PriceChart>
+            {assetData.length > 0 ? <PriceChart assetDataSets={assetData}></PriceChart> : 'Select some assets to get started'}
         </div>
     )
 }

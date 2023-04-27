@@ -35,7 +35,7 @@ pubsub.Subscribe("MarketData.Query.*", async (ch, msg) => {
     {
         System.Console.WriteLine($"Cache hit for [{requestKey}].");
     }
-    System.Console.WriteLine($"Received result of length {result.Length}");
+    System.Console.WriteLine($"Received result of length {result.Length} for [{requestKey}]");
     var publishChannel = $"MarketData.Publish.{requestKey}";
     System.Console.WriteLine($"Publishing result to {publishChannel}");
     pubsub.Publish(publishChannel, result);

@@ -43,10 +43,12 @@ io.on("connection", (socket) => {
 
     socket.on('FromClient.Query', async (requestKey) => {
         console.log('FromClient.Query:', requestKey, 'received');
-        await redisSub.subscribe(`MarketData.Publish.${requestKey}`, (data, ch) => {
+        await redisSub.subscribe(`MarketData.Publish.${requestKey}`, (rawData, ch) => {
             console.log('Received response from', ch);
-            console.log('Emitting command of length', data.length, 'to', `FromServer.Command.${requestKey}`);
-            socket.emit(`FromServer.Command.${requestKey}`, data)
+            const assetData = JSON.parse(rawData);
+            assetData.data.sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
+            console.log('Emitting data to', `FromServer.Command.${requestKey}`);
+            socket.emit(`FromServer.Command.${requestKey}`, assetData)
         });
         console.log('Submitting query to', `MarketData.Query.${requestKey}`, 'for', requestKey);
         await redisPub.publish(`MarketData.Query.${requestKey}`, requestKey)

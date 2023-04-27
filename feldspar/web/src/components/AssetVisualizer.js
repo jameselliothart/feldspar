@@ -18,7 +18,7 @@ export default function AssetVisualizer({ availableAssets = Commodities.function
         setAssetData([]);
         selectedAssets.forEach(asset => {
             const query = `${asset}|MONTHLY`;
-            SOCKET.on(`FromServer.Command.${query}`, d => setAssetData([...assetData, JSON.parse(d)]));
+            SOCKET.on(`FromServer.Command.${query}`, d => setAssetData([...assetData, d]));
             console.log('FromClient.Query', query, 'emitted');
             SOCKET.emit('FromClient.Query', query);
         });

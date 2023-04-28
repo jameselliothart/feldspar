@@ -21,7 +21,10 @@ function App() {
     newSocket.on('disconnect', () => console.log('client disconnected ', newSocket.id));
 
     // CLEAN UP THE EFFECT
-    return () => newSocket.disconnect();
+    return () => {
+      console.log('Disconnecting', newSocket.id);
+      newSocket.disconnect();
+  }
 
   }, [setSocket]);
 

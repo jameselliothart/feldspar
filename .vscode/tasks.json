@@ -61,7 +61,7 @@
                 "build"
             ],
             "dockerBuild": {
-                "tag": "feldspar:latest",
+                "tag": "feldspar.azurecr.io/marketdataservice:latest",
                 "dockerfile": "${workspaceFolder}/feldspar/MarketDataService/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
@@ -100,7 +100,22 @@
             "dockerBuild": {
                 "dockerfile": "${workspaceFolder}/feldspar/middle_tier/Dockerfile",
                 "context": "${workspaceFolder}/feldspar/middle_tier",
-                "pull": true
+                "pull": true,
+                "tag": "feldspar.azurecr.io/middletier:latest"
+            },
+            "node": {
+                "package": "${workspaceFolder}/feldspar/middle_tier/package.json"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build",
+            "platform": "node",
+            "dockerBuild": {
+                "dockerfile": "${workspaceFolder}/feldspar/web/Dockerfile",
+                "context": "${workspaceFolder}/feldspar/web",
+                "pull": true,
+                "tag": "feldspar.azurecr.io/web:latest"
             },
             "node": {
                 "package": "${workspaceFolder}/feldspar/middle_tier/package.json"

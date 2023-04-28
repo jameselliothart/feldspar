@@ -36,7 +36,6 @@ services:
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
-      WDS_SOCKET_PORT: '0'
     depends_on:
       - middletier
     ports:

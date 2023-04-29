@@ -37,8 +37,8 @@ let redisPub;
 io.on("connection", (socket) => {
     console.log("New client connected: ", socket.id);
 
-    socket.on("disconnect", () => {
-        console.log("Client disconnected", socket.id);
+    socket.on("disconnect", (reason) => {
+        console.log("Client disconnected", socket.id, 'Reason', reason);
     });
 
     socket.on('FromClient.Query', async (requestKey) => {
@@ -46,6 +46,7 @@ io.on("connection", (socket) => {
         await redisSub.subscribe(`MarketData.Publish.${requestKey}`, (rawData, ch) => {
             console.log('Received response from', ch);
             const assetData = JSON.parse(rawData);
+            // TODO move filtering to marketdataservice - avoid caching bad values
             assetData.data = assetData.data.filter(dataPoint => !Number.isNaN(parseFloat(dataPoint.value)));
             assetData.data.sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
             console.log('Emitting data to', `FromServer.Command.${requestKey}`);

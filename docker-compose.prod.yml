@@ -7,22 +7,18 @@ services:
     command: redis-server
 
   marketdataservice:
-    image: marketdataservice
-    build:
-      context: .
-      dockerfile: feldspar/MarketDataService/Dockerfile
+    image: feldspar.azurecr.io/marketdataservice:latest
+    restart: always
     environment:
       - FELDSPAR_REDIS_CONNECTION=redis
       - FELDSPAR_ALPHAVANTAGE_BASE_URI=https://www.alphavantage.co
-      - FELDSPAR_ALPHAVANTAGE_API_KEY
+      - FELDSPAR_ALPHAVANTAGE_API_KEY=5COWD3JD8LTVLVCC
     depends_on:
       - redis
 
   middletier:
-    image: middletier
-    build:
-      context: feldspar/middle_tier
-      dockerfile: ./Dockerfile
+    image: feldspar.azurecr.io/middletier:latest
+    restart: always
     environment:
       NODE_ENV: production
       FELDSPAR_REDIS_CONNECTION: redis
@@ -30,10 +26,8 @@ services:
       - redis
 
   web:
-    image: web
-    build:
-      context: feldspar/web
-      dockerfile: ./Dockerfile
+    image: feldspar.azurecr.io/web:latest
+    restart: always
     environment:
       NODE_ENV: production
     depends_on:

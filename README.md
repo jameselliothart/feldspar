@@ -48,6 +48,8 @@ if response.json() fails to parse, use response.text() to see what is actually g
 - [Node caching - actually used in C#](https://www.digitalocean.com/community/tutorials/how-to-implement-caching-in-node-js-using-redis)
 - [can use x,y with line chart](https://www.chartjs.org/docs/latest/axes/cartesian/time.html#parser) - hard to find
 
+- [wildcard subscribe with node redis](https://github.com/redis/node-redis/blob/master/docs/pub-sub.md) - hard to find
+
 ## Road Map
 
 - [x] asset selector

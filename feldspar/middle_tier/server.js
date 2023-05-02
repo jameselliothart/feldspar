@@ -3,6 +3,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 const index = require("./routes/index");
 const redis = require("redis");
+const RedisSubscriber = require("./redis_manager");
 
 const PORT = process.env.FELDSPAR_MT_PORT || 4001;
 const REDIS_CONN = process.env.FELDSPAR_REDIS_CONNECTION || 'localhost'
@@ -31,6 +32,8 @@ let redisPub;
     redisPub.on('error', err => console.log('Redis publisher error', err));
     await redisSub.connect();
     await redisPub.connect();
+    subClient = new RedisSubscriber(redisSub);
+    await subClient.subscribe();
 })();
 
 
@@ -41,23 +44,16 @@ io.on("connection", (socket) => {
         console.log("Client disconnected", socket.id, 'Reason', reason);
     });
 
+    subClient.setSocket(socket);
+
     socket.on('FromClient.Query', async (requestKey) => {
         console.log('FromClient.Query:', requestKey, 'received');
-        await redisSub.subscribe(`MarketData.Publish.${requestKey}`, (rawData, ch) => {
-            console.log('Received response from', ch);
-            const assetData = JSON.parse(rawData);
-            // TODO move filtering to marketdataservice - avoid caching bad values
-            assetData.data = assetData.data.filter(dataPoint => !Number.isNaN(parseFloat(dataPoint.value)));
-            assetData.data.sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
-            console.log('Emitting data to', `FromServer.Command.${requestKey}`);
-            socket.emit(`FromServer.Command.${requestKey}`, assetData)
-        });
         console.log('Submitting query to', `MarketData.Query.${requestKey}`, 'for', requestKey);
         await redisPub.publish(`MarketData.Query.${requestKey}`, requestKey)
     });
 });
 
 server.listen(PORT, err => {
-    if(err) console.log(err);
+    if (err) console.log(err);
     console.log(`Listening on port ${PORT}`);
 });

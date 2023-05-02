@@ -5,13 +5,11 @@ import PermanentDrawerLeft from "./components/frame/PermanentDrawerLeft";
 const ENDPOINT = process.env.REACT_APP_SOCKET_ENDPOINT;
 
 function App() {
-  const [socket, setSocket] = useState(null);
   const [health, setHealth] = useState("");
 
   useEffect(() => {
     console.log('Connecting to', ENDPOINT);
     const newSocket = io(ENDPOINT);
-    setSocket(newSocket);
 
     newSocket.on('connect', () => console.log('client connected ', newSocket.id));
     newSocket.on('connect_error', () => {
@@ -26,7 +24,7 @@ function App() {
       newSocket.disconnect();
   }
 
-  }, [setSocket]);
+  }, []);
 
   // TODO move this to about page
   const checkHealth = async () => {

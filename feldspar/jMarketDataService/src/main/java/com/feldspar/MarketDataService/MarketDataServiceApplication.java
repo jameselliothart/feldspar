@@ -17,10 +17,13 @@ public class MarketDataServiceApplication {
 	private static final Logger _logger = LoggerFactory.getLogger(MarketDataServiceApplication.class);
 
 	public static void main(String[] args) {
-		final Jedis jedisSub = new Jedis();
-		final Jedis jedisPub = new Jedis();
 
-		try (ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(MarketDataServiceConfig.class)) {
+		try (
+				ConfigurableApplicationContext context =
+					new AnnotationConfigApplicationContext(MarketDataServiceConfig.class);
+				var jedisPub = new Jedis(context.getBean(Settings.class).redisConnection(), 6379);
+				var jedisSub = new Jedis(context.getBean(Settings.class).redisConnection(), 6379);
+			) {
 			var settings = context.getBean(Settings.class);
 			final var alphaVantage = new AlphaVantage(settings.alphaVantageUri(), settings.alphaVantageApiKey());
 			JedisPubSub jedisPubSub = new JedisPubSub() {
@@ -64,13 +67,6 @@ public class MarketDataServiceApplication {
 			jedisSub.psubscribe(jedisPubSub, "MarketData.Query.*");
 		} catch (Exception e) {
 			_logger.error("Uh oh:", e);
-		} finally {
-			if (jedisSub != null) {
-				jedisSub.close();
-			}
-			if (jedisPub != null) {
-				jedisPub.close();
-			}
 		}
 
 		SpringApplication.run(MarketDataServiceApplication.class, args);

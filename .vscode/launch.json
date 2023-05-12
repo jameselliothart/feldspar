@@ -2,6 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "MarketDataServiceApplication",
+            "request": "launch",
+            "mainClass": "com.feldspar.MarketDataService.MarketDataServiceApplication",
+            "projectName": "MarketDataService"
+        },
+        {
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",

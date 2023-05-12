@@ -7,9 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
@@ -21,8 +20,7 @@ public class MarketDataServiceApplication {
 		final Jedis jedisSub = new Jedis();
 		final Jedis jedisPub = new Jedis();
 
-		try {
-			ApplicationContext context = new AnnotationConfigApplicationContext(MarketDataServiceConfig.class);
+		try (ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(MarketDataServiceConfig.class)) {
 			var settings = context.getBean(Settings.class);
 			final var alphaVantage = new AlphaVantage(settings.alphaVantageUri(), settings.alphaVantageApiKey());
 			JedisPubSub jedisPubSub = new JedisPubSub() {
